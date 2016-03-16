@@ -6,7 +6,8 @@ extern crate multirust_mock;
 
 use multirust_mock::clitools::{self, Config, Scenario,
                                expect_ok, expect_ok_ex,
-                               expect_err_ex};
+                               expect_err_ex,
+                               this_host_triple};
 use std::env;
 
 fn setup(f: &Fn(&Config)) {
@@ -149,5 +150,25 @@ r"",
 &format!(
 r"info: deleted directory '{}'
 ", config.homedir.path().display()));
+    });
+}
+
+#[test]
+fn list_targets() {
+    setup(&|config| {
+        let trip = this_host_triple();
+        let mut sorted = vec![format!("{} (default)", &*trip),
+                              format!("{} (installed)", clitools::CROSS_ARCH1),
+                              clitools::CROSS_ARCH2.to_string()];
+        sorted.sort();
+
+        let expected = format!("{}\n{}\n{}\n", sorted[0], sorted[1], sorted[2]);
+
+        expect_ok(config, &["multirust", "update", "nightly"]);
+        expect_ok(config, &["multirust", "add-target", "nightly",
+                            clitools::CROSS_ARCH1]);
+        expect_ok_ex(config, &["multirust", "list-targets", "nightly"],
+&expected,
+r"");
     });
 }
