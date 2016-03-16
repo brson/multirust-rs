@@ -4,14 +4,16 @@ use std::env;
 use std::io;
 use std::process::Command;
 use std::fmt::{self, Display};
+use std::rc::Rc;
 
 use itertools::Itertools;
 
 use errors::*;
-use multirust_dist::{temp, dist};
+use multirust_dist::{self, temp, dist};
 use multirust_utils::utils;
 use override_db::OverrideDB;
 use toolchain::Toolchain;
+use telemetry::{Telemeter, EventDetails};
 
 // Note: multirust-rs jumped from 2 to 12 to leave multirust.sh room to diverge
 pub const METADATA_VERSION: &'static str = "12";
@@ -46,12 +48,33 @@ pub struct Cfg {
     pub env_override: Option<String>,
     pub dist_root_url: Cow<'static, str>,
     pub notify_handler: SharedNotifyHandler,
+    pub telemeter: Rc<Telemeter>,
 }
 
 impl Cfg {
     pub fn from_env(notify_handler: SharedNotifyHandler) -> Result<Self> {
         // Set up the multirust home directory
         let multirust_dir = try!(multirust_dir());
+
+        let telemetry_dir = multirust_dir.join("telemetry");
+        let telemeter = Rc::new(Telemeter::new(telemetry_dir));
+        let telemeter_clone = telemeter.clone();
+
+        let notify_handler: SharedNotifyHandler = shared_ntfy!(move |n: Notification| {
+            let telemeter = telemeter_clone;
+            match n {
+                Notification::Install(multirust_dist::errors::Notification::DownloadingComponent(name, target, version)) => {
+                    telemeter.log(EventDetails::ComponentDownload {
+                        name: name.to_owned(),
+                        target: target.to_owned(),
+                        version: version.to_owned(),
+                    });
+                },
+                _ => { }
+            }
+
+            notify_handler.call(n)
+        });
 
         try!(utils::ensure_dir_exists("home", &multirust_dir, ntfy!(&notify_handler)));
 
@@ -98,6 +121,7 @@ impl Cfg {
             notify_handler: notify_handler,
             env_override: env_override,
             dist_root_url: dist_root_url,
+            telemeter: telemeter,
         })
     }
 

@@ -34,6 +34,7 @@ use common::{self, confirm};
 use itertools::Itertools;
 use multirust::{Error, Result, NotifyHandler};
 use multirust::multirust_dir;
+use multirust::telemetry::EventDetails;
 use multirust_dist::dist;
 use multirust_dist;
 use multirust_utils::utils;
@@ -322,6 +323,7 @@ fn maybe_install_rust_stable(verbose: bool) -> Result<()> {
         let stable = try!(cfg.get_toolchain("stable", false));
         try!(stable.install_from_dist());
         try!(cfg.set_default("stable"));
+        cfg.telemeter.log(EventDetails::InitialInstall);
     } else {
         info!("updating existing installation");
     }

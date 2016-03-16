@@ -9,6 +9,8 @@ use std::process::{self, Command};
 use std;
 use tty;
 use term;
+use multirust::telemetry::{EventDetails, Telemeter};
+use std::time::Instant;
 
 pub fn confirm(question: &str, default: bool) -> Result<bool> {
     print!("{} ", question);
@@ -74,19 +76,21 @@ pub fn set_globals(verbose: bool) -> Result<Cfg> {
 
 }
 
-pub fn run_inner<S: AsRef<OsStr>>(mut command: Command,
+pub fn run_inner<S: AsRef<OsStr>>(cfg: &Cfg,
+                                  mut command: Command,
                                   args: &[S]) -> Result<()> {
     command.args(&args[1..]);
     // FIXME rust-lang/rust#32254. It's not clear to me
     // when and why this is needed.
     command.stdin(process::Stdio::inherit());
 
-    let status = command.status();
+    let code = run_with_telemetry(&cfg.telemeter,
+                                  command,
+                                  args[0].as_ref());
 
-    match status {
-        Ok(status) => {
+    match code {
+        Ok(code) => {
             // Ensure correct exit code is returned
-            let code = status.code().unwrap_or(1);
             process::exit(code);
         }
         Err(e) => {
@@ -96,6 +100,26 @@ pub fn run_inner<S: AsRef<OsStr>>(mut command: Command,
             }.into())
         }
     }
+}
+
+fn run_with_telemetry(t: &Telemeter, mut command: Command,
+                      arg0: &OsStr) -> io::Result<i32> {
+    let arg0 = arg0.to_str().unwrap_or("");
+    let start = Instant::now();
+    let status = try!(command.status());
+    let end = Instant::now();
+    let time = end - start;
+
+    const SIGNAL_EXIT_CODE: i32 = 44;
+    let code = status.code().unwrap_or(SIGNAL_EXIT_CODE);
+
+    if arg0.ends_with("rustc") || arg0.ends_with("rustc.exe") {
+        t.log(EventDetails::RustcRun(time, code));
+    } else if arg0.ends_with("cargo") || arg0.ends_with("cargo.exe") {
+        t.log(EventDetails::CargoRun(time, code));
+    }
+
+    Ok(code)
 }
 
 pub fn show_channel_version(cfg: &Cfg, name: &str) -> Result<()> {

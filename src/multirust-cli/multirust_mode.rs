@@ -62,14 +62,14 @@ fn run(cfg: &Cfg, m: &ArgMatches) -> Result<()> {
     let args = m.values_of("command").unwrap();
 
     let cmd = try!(toolchain.create_command(args[0]));
-    run_inner(cmd, &args)
+    run_inner(cfg, cmd, &args)
 }
 
 fn proxy(cfg: &Cfg, m: &ArgMatches) -> Result<()> {
     let args = m.values_of("command").unwrap();
 
     let cmd = try!(cfg.create_command_for_dir(&try!(utils::current_dir()), args[0]));
-    run_inner(cmd, &args)
+    run_inner(cfg, cmd, &args)
 }
 
 fn command_requires_metadata() -> Result<bool> {

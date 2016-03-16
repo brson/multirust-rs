@@ -24,7 +24,7 @@ pub enum Notification<'a> {
     ExtensionNotInstalled(&'a Component),
     NonFatalError(&'a Error),
     MissingInstalledComponent(&'a str),
-    DownloadingComponent(&'a str),
+    DownloadingComponent(&'a str, &'a str, &'a str),
     InstallingComponent(&'a str),
     DownloadingManifest,
     DownloadingLegacyManifest,
@@ -100,7 +100,7 @@ impl<'a> Notification<'a> {
             ChecksumValid(_) | NoUpdateHash(_) |
             DownloadingLegacyManifest  => NotificationLevel::Verbose,
             Extracting(_, _) | SignatureValid(_)  |
-            DownloadingComponent(_) |
+            DownloadingComponent(_, _, _) |
             InstallingComponent(_) |
             ComponentAlreadyInstalled(_)  |
             RollingBack | DownloadingManifest => NotificationLevel::Info,
@@ -136,7 +136,7 @@ impl<'a> Display for Notification<'a> {
             }
             NonFatalError(e) => write!(f, "{}", e),
             MissingInstalledComponent(c) => write!(f, "during uninstall component {} was not found", c),
-            DownloadingComponent(c) => write!(f, "downloading component '{}'", c),
+            DownloadingComponent(c, _, _) => write!(f, "downloading component '{}'", c),
             InstallingComponent(c) => write!(f, "installing component '{}'", c),
             DownloadingManifest => write!(f, "downloading toolchain manifest"),
             DownloadingLegacyManifest => write!(f, "manifest not found. trying legacy manifest"),

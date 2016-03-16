@@ -23,6 +23,6 @@ pub fn main() -> Result<()> {
 fn direct_proxy(cfg: &Cfg, arg0: &str) -> Result<()> {
     let cmd = try!(cfg.create_command_for_dir(&try!(utils::current_dir()), arg0));
     let args: Vec<_> = env::args_os().collect();
-    run_inner(cmd, &args)
+    run_inner(cfg, cmd, &args)
 }
 
