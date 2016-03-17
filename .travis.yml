@@ -51,6 +51,13 @@ install:
 
 script:
   # Run linux builds in a docker container to improve portability of the resulting binaries
+  # Run cargo tests
+  - cargo test --release -p multirust-dist --verbose
+  - cargo test --release --verbose
+
+  # This build happens after the above test. Otherwise
+  # cargo test will overwrite the compatible binaries
+  # we're trying to build.
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then
       docker run
         --entrypoint bash
@@ -67,9 +74,6 @@ script:
     else
       cargo build --release --verbose;
     fi
-  # Run cargo tests
-  - cargo test --release -p multirust-dist --verbose
-  - cargo test --release --verbose
 
 after_success:
   # Install kcov dependencies
