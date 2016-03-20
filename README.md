@@ -1,190 +1,200 @@
-# multirust-rs
+# rustup - The Rust toolchain installer
 
-[![Build Status](https://travis-ci.org/rust-lang-nursery/multirust-rs.svg?branch=master)](https://travis-ci.org/rust-lang-nursery/multirust-rs)
-[![Build status](https://ci.appveyor.com/api/projects/status/vyiu5qfallpo0n6c/branch/master?svg=true)](https://ci.appveyor.com/project/brson/multirust-rs/branch/master)
+`rustup` installs Rust from the official release channels, enabling
+you to easily switch between stable, beta, and nightly compilers
+and keep them updated.
 
-Multirust-rs is a reimplementation of multirust in rust. It provides both a command line interface, and a rust library, so it's trivial to integrate it with external tools.
+If you are programming in Rust you should be using `rustup`.
 
-## Library Installation
+**WARNING: Don't use rustup yet! This is seriously beta software.**
 
-Add [multirust-rs](https://crates.io/crates/multirust-rs) or [multirust-dist](https://crates.io/crates/multirust-dist) as a standard cargo dependency to your project, depending on your requirements.
+## Installation
 
-## Library Documentation
+Follow the instructions at https://www.rustup.rs.
 
-- [multirust](http://diggsey.github.io/multirust-rs/multirust/index.html)
-- [multirust-dist](http://diggsey.github.io/multirust-rs/multirust_dist/index.html)
+After installation you will have executables `rustc`, `cargo`, and
+`rustup` in *Cargo's 'bin' directory*, which on Unix is located at
+`$HOME/.cargo/bin` and on Windows is `%USERPROFILE%\.cargo\bin`. In
+addition to the compiler this directory will contain any tools you
+install with `cargo install`.
 
+These directories will be in your `$PATH` environment variable, which
+means you can run them from the shell without further configuration.
 
-## Tool Installation
-
-### Installing from binaries
-
-- [Windows GNU 64-bit installer](https://github.com/rust-lang-nursery/multirust-rs-binaries/raw/master/x86_64-pc-windows-gnu/multirust-setup.exe)
-- [Windows MSVC 64-bit installer](https://github.com/rust-lang-nursery/multirust-rs-binaries/raw/master/x86_64-pc-windows-msvc/multirust-setup.exe)<sup>[\*1](#vs2015)</sup>
-- [Windows GNU 32-bit installer](https://github.com/rust-lang-nursery/multirust-rs-binaries/raw/master/i686-pc-windows-gnu/multirust-setup.exe)
-- [Windows MSVC 32-bit installer](https://github.com/rust-lang-nursery/multirust-rs-binaries/raw/master/i686-pc-windows-msvc/multirust-setup.exe)<sup>[\*1](#vs2015)</sup>
-- [Linux 64-bit installer](https://github.com/rust-lang-nursery/multirust-rs-binaries/raw/master/x86_64-unknown-linux-gnu/multirust-setup)
-- [Linux 32-bit installer](https://github.com/rust-lang-nursery/multirust-rs-binaries/raw/master/i686-unknown-linux-gnu/multirust-setup)
-- [Mac 64-bit installer](https://github.com/rust-lang-nursery/multirust-rs-binaries/raw/master/x86_64-apple-darwin/multirust-setup)
-- [Mac 32-bit installer](https://github.com/rust-lang-nursery/multirust-rs-binaries/raw/master/i686-apple-darwin/multirust-setup)
-
-Binaries for other platforms are not yet available. Follow the instructions below for installing from source.
-
-<a name="vs2015">\*1)</a> MSVC builds of `multirust-rs` additionally require an [installation of Visual Studio 2015](https://www.visualstudio.com/downloads). Make sure to check the "C++ tools" option. No additional software installation is necessary for basic use of the GNU build.
-
-### Installing from source
-
-Run this command in a writable directory:
-```
-git clone --depth 1 https://github.com/Diggsey/multirust-rs.git multirust-rs && cd multirust-rs && cargo run --release -- self install -a
-```
-
-This will automatically add `~/.multirust/bin` to your PATH (remove `-a` to disable this behavior).
-
-On linux, this is done by appending to `~/.profile`.
-On windows, this is done by modifying the registry entry `HKCU\Environment\PATH`.
-
-The changes to PATH will not take effect immediately within the same terminal.
-
-The `multirust-rs` directory which is created is no longer required once installation has completed, but keeping it around will make future updates much faster:
+Open a *new* shell and type the following:
 
 ```
-cd multirust-rs && git pull && cargo run --release install
+rustc --version
 ```
 
+If you see something like `rustc 1.7.0 (a5d1e7a59 2016-02-29)` then
+you are ready to Rust.
 
-## Tool Documentation
+## Keeping Rust up to date
 
-### Usage
+Rust is distributed on three different [release channels]: stable,
+beta, and nightly. `rustup` is configured to use the stable channel by
+default, which represents represents the latest release of Rust,
+and is released every six weeks.
+
+When a new version of Rust is released, you can type `rustup` to update
+to it:
 
 ```
-multirust 0.0.5
-Diggory Blake
-Port of multirust to rust
+$ rustup
+info: updating existing install for 'stable'
+info: downloading toolchain manifest
+info: downloading component 'rustc'
+info: downloading component 'rust-std'
+info: downloading component 'rust-docs'
+info: downloading component 'cargo'
+info: installing component 'rustc'
+info: installing component 'rust-std'
+info: installing component 'rust-docs'
+info: installing component 'cargo'
+info: toolchain 'stable' installed
 
-USAGE:
-        multirust [FLAGS] [SUBCOMMAND]
+stable updated:
 
-FLAGS:
-    -h, --help       Prints help information
-    -V, --version    Prints version information
-    -v, --verbose    Enable verbose output
-
-SUBCOMMANDS:
-    ctl
-    default             Set the default toolchain.
-    delete-data         Delete all user metadata.
-    doc                 Open the documentation for the current toolchain.
-    help                Prints this message
-    list-overrides      List all overrides.
-    list-toolchains     List all installed toolchains.
-    override            Set the toolchain override.
-    proxy               Proxy a command.
-    remove-override     Remove an override.
-    remove-toolchain    Uninstall a toolchain.
-    run                 Run a command.
-    self                Commands for managing multirust itself.
-    show-default        Show information about the current default.
-    show-override       Show information about the current override.
-    update              Install or update a given toolchain.
-    upgrade-data        Upgrade the ~/.multirust directory.
-    which               Report location of the currently active Rust tool.
+rustc 1.7.0 (a5d1e7a59 2016-02-29)
+cargo 0.8.0-nightly (28a0cbb 2016-01-17)
 ```
 
-### Toolchain names
+This is the essense of `rustup`.
 
-Standard toolchain names have the following form:
+[release channels]: https://github.com/rust-lang/rfcs/blob/master/text/0507-release-channels.md
+
+## Working with nightly Rust
+
+Rustup gives you easy access to the nightly compiler. To add it just run `rustup update nightly`:
+
 ```
-[<arch>-][<os>-][<env>-]<channel>[-<date>]
+$ rustup update nightly
+info: installing toolchain 'nightly'
+info: downloading toolchain manifest
+info: downloading component 'rustc'
+info: downloading component 'rust-std'
+info: downloading component 'rust-docs'
+info: downloading component 'cargo'
+info: installing component 'rustc'
+info: installing component 'rust-std'
+info: installing component 'rust-docs'
+info: installing component 'cargo'
+info: toolchain 'nightly' installed
 
-<arch>		= i686|x86_64
-<os>		= pc-windows|unknown-linux|apple-darwin
-<env>		= gnu|msvc
-<channel>	= stable|beta|nightly
-<date>		= YYYY-MM-DD
+nightly updated:
+
+rustc 1.9.0-nightly (02310fd31 2016-03-19)
+cargo 0.10.0-nightly (132b82d 2016-03-19)
 ```
 
-Any combination of optional parts are acceptable.
+Now Rust nightly is installed, but not activated. To test it out you
+can run a command from the nightly toolchain like
 
-Parts of the target triple which are omitted, will default to that of the host.
-If the date is omitted, the toolchain will track the most recent version.
+```
+$ rustup run rustc --version
+rustc 1.9.0-nightly (02310fd31 2016-03-19)
+```
 
-### Envionment variables
+But more likely you want to use it for a while. To switch to nightly
+globally, change the default with `rustup default nightly`:
 
-The following environment variables can be used to customize the behaviour of
-multirust-rs:
+```
+$ rustup default nightly
+info: using existing install for 'nightly'
+info: default toolchain set to 'nightly'
 
-- `MULTIRUST_TOOLCHAIN` (default: none)
-	If set, will override the toolchain used for all rust tool invocations. A toolchain
-	with this name should be installed, or invocations will fail.
+nightly revision:
 
-- `MULTIRUST_DIST_ROOT` (default: `https://static.rust-lang.org/dist`)
-	Sets the root URL for downloading packages. You can change this to instead use
-	a local mirror, or to test the binaries from the staging directory.
+rustc 1.9.0-nightly (02310fd31 2016-03-19)
+cargo 0.10.0-nightly (132b82d 2016-03-19)
+```
 
-- `MULTIRUST_HOME` (default: `~/.multirust` or `%LOCALAPPDATA%/.multirust`)
-	Sets the root multirust folder, used for storing installed toolchains and configuration
-	options.
+Now any time you run `cargo` or `rustc` you will be running the
+nightly compiler.
 
-- `MULTIRUST_GPG_KEY` (default: none)
-	Sets the GPG key used to verify the signatures of downloaded files.
-	WARNING: GPG signature verification is not yet implemented.
+With nightly installed any time you run `rustup`, the nightly channel
+will be updated:
 
+```
+$ rustup
+info: updating existing install for 'stable'
+info: downloading toolchain manifest
+info: downloading component 'rust'
+info: toolchain is already up to date
+info: updating existing install for 'nightly'
+info: downloading toolchain manifest
+info: downloading component 'rust'
+info: toolchain is already up to date
 
-### Example usage
+stable unchanged:
+
+rustc 1.7.0 (a5d1e7a59 2016-02-29)
+cargo 0.8.0-nightly (28a0cbb 2016-01-17)
+
+nightly unchanged:
+
+rustc 1.9.0-nightly (02310fd31 2016-03-19)
+cargo 0.10.0-nightly (132b82d 2016-03-19)
+```
+
+## Cross-compilation
+
+## Overrides
+
+## Toolchain specification
+
+## Uninstallation
+
+## How rustup works
+
+## Examples
 
 - Set the default toolchain to the latest nightly:
-	`multirust default nightly`
+  `rustup default nightly`
+
+- List all targets:
+  `rustup target list`
+
+- Install the Android target:
+  `rustup target add arm-linux-androideabi`
+
+- Remove the Android target:
+  `rustup target remove arm-linux-androideabi`
 
 - For the current directory, use the most recent stable build using the MSVC linker:
-	`multirust override msvc-stable`
+  `rustup override stable-msvc`
 
 - For the current directory, use a 32-bit beta build instead:
-	`multirust override i686-beta`
+  `rustup override beta-i686`
 
 - For the current directory, use a nightly from a specific date:
-	`multirust override nightly-2015-04-01`
+  `rustup override nightly-2015-04-01`
 
 - Combine these:
-	`multirust override i686-msvc-nightly-2015-04-01`
-
-- Install a custom toolchain using an installer:
-	`multirust override my_custom_toolchain --install "/home/user/RustInstaller.tar.gz"`
-
-- Install a custom toolchain using an installer from the internet (linux):
-	`multirust override my_custom_toolchain --install "http://domain.tld/installer.tar.gz"`
+  `rustup override msvc-nightly-2015-04-01-i686`
 
 - Install a custom toolchain by symlinking an existing installation:
-	`multirust override my_custom_toolchain --link-local "C:\RustInstallation"`
-
-- Install a custom toolchain by copying an existing installation:
-	`multirust override my_custom_toolchain --copy-local "C:\RustInstallation"`
+  `rustup toolchain link my-toolchain "C:\RustInstallation"`
 
 - Switch back to the default toolchain for the current directory:
-	`multirust remove-override`
+  `rustup override remove`
 
 - See which toolchain will be used in the current directory:
-	`multirust show-override`
+  `rustup override show`
 
+## Environment variables
 
-## License
+- `RUSTUP_TOOLCHAIN` (default: none)
+  If set, will override the toolchain used for all rust tool
+  nvocations. A toolchain with this name should be installed, or
+  invocations will fail.
 
-    Licensed under either of
+- `RUSTUP_DIST_ROOT` (default: `https://static.rust-lang.org/dist`)
+  Sets the root URL for downloading packages. You can change this to
+  instead use a local mirror, or to test the binaries from the staging
+  directory.
 
-     * Apache License, Version 2.0, ([LICENSE-APACHE](LICENSE-APACHE) or http://www.apache.org/licenses/LICENSE-2.0)
-     * MIT license ([LICENSE-MIT](LICENSE-MIT) or http://opensource.org/licenses/MIT)
-
-    at your option.
-
-
-## Contributing
-
-1. Fork it!
-2. Create your feature branch: `git checkout -b my-new-feature`
-3. Commit your changes: `git commit -am 'Add some feature'`
-4. Push to the branch: `git push origin my-new-feature`
-5. Submit a pull request :D
-
-Unless you explicitly state otherwise, any contribution intentionally submitted
-for inclusion in the work by you, as defined in the Apache-2.0 license, shall be dual licensed as above, without any
-additional terms or conditions.
+- `RUSTUP_HOME` (default: `~/.rustup` or `%USERPROFILE%/.rustup`)
+  Sets the root multirust folder, used for storing installed
+  toolchains and configuration options.

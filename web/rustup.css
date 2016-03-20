@@ -1,0 +1,200 @@
+@import url(https://fonts.googleapis.com/css?family=Cutive+Mono:400);
+@import url(https://fonts.googleapis.com/css?family=Work+Sans:700);
+@import url(https://fonts.googleapis.com/css?family=Source+Code+Pro:500);
+@import url(https://fonts.googleapis.com/css?family=Montserrat:400);
+
+/* FIXME: Can't use CSS variables for real */
+
+body {
+    --main-font: "Cutive Mono", monospace;
+    --main-font-weight: 400;
+    --code-font: "Source Code Pro", monospace;
+    --code-font-weight: 500;
+    --rust-font: "Work Sans", monospace;
+    --rust-font-weight: 700;
+    --link-font: "Source Code Pro", monospace;
+}
+
+/* Inspired by http://www.colourlovers.com/palette/482774/dream_magnet */
+body {
+    --bg-color: #343838;
+    --text-color: white;
+    --text-shadow-color: #242828;
+    --link-color: #70EFFC;
+    --link-shadow-color: #242828;
+    --code-bg-color: #D0FFFF;
+    --code-text-color: #002F3B;
+    --code-shadow-color: #70EFFC;
+}
+
+body {
+    --idx-main-width: 25em;
+    --idx-curl-width: 30em;
+    --border-radius: 3px;
+    --inset-shadow: inset 0px 0px 10px 0px var(--code-shadow-color);
+}
+
+body {
+    margin-top: 3em;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: var(--main-font);
+    font-weight: var(--main-font-weight);
+    font-size: 200%;
+}
+
+/* This is the larger Rust logo in the background */
+body:after {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.03;
+    z-index: -1;
+
+    background-image: url("https://www.rust-lang.org/logos/rust-logo-blk.svg");
+    background-repeat: no-repeat;
+    background-size: 100em;
+    background-position: center;
+}
+
+/* This is the smaller Rust logo in the center of th escreen */
+#pitch:before {
+    content: "";
+    display: block;
+    position: absolute;
+    width: var(--idx-curl-width);
+    height: var(--idx-curl-width);
+    z-index: -1;
+    background-image: url("rust-logo-white.svg");
+    background-size: var(--idx-curl-width);
+    opacity: 0.015;
+}
+
+pre {
+    font-family: var(--code-font);
+    font-weight: var(--code-font-weight);
+}
+
+body#idx p {
+    text-shadow: 2px 2px var(--text-shadow-color);
+}
+
+body#idx #pitch > a {
+    margin-top: 0.3em;
+    margin-bottom: 0.3em;
+    display: block;
+    font-family: var(--rust-font);
+    font-variant: small-caps;
+    font-size: 300%;
+    font-weight: var(--rust-font-weight);
+    text-shadow: 4px 3px var(--link-shadow-color);
+    text-transform: lowercase;
+    letter-spacing: 0.2em;
+}
+
+a {
+    color: var(--link-color);
+    text-decoration: none;
+}
+
+body#idx a {
+    text-shadow: 2px 2px var(--link-shadow-color);
+}
+
+body#idx > * {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    width: var(--idx-main-width);
+}
+
+body#idx > #pitch {
+    width: var(--idx-curl-width);
+}
+
+body#idx p {
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
+body#idx > #platform-instructions-unix {
+    margin-left: auto;
+    margin-right: auto;
+    width: var(--idx-curl-width);
+}
+
+#platform-instructions-unix > * {
+    margin-left: auto;
+    margin-right: auto;
+    width: var(--idx-main-width);
+}
+
+#platform-instructions-unix > pre {
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 1em;
+    padding-bottom: 1em;
+    width: var(--idx-curl-width);
+    background-color: var(--code-bg-color);
+    color: var(--code-text-color);
+    text-align: center;
+    border-radius: var(--border-radius);
+    box-shadow: var(--inset-shadow);
+}
+
+#platform-instructions-win a {
+    display: block;
+    padding-top: 0.4em;
+    padding-bottom: 0.6em;
+    font-family: var(--code-font);
+}
+
+#about {
+    font-size: 70%;
+    text-shadow: 1px 1px var(--text-shadow-color);
+}
+#about > a {
+    text-shadow: 1px 1px var(--link-shadow-color);
+}
+
+div#read {
+    width: 40em;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: var(--border-radius);
+    background-color: var(--code-bg-color);
+    color: var(--bg-color);
+    box-shadow: var(--inset-shadow);
+    padding-top: 10px;
+    padding-left: 2em;
+    padding-right: 2em;
+    padding-bottom: 1em;
+}
+
+div#read h1 {
+    text-align: center;
+    font-variant: small-caps;
+    letter-spacing: 0.2em;
+    font-family: var(--rust-font);
+    text-shadow: 4px 3px var(--link-color);
+}
+
+div#read h2 {
+    font-size: 90%;
+    font-family: "Montserrat", sans-serif;
+}
+
+div#read p {
+    margin-top: 1.5em;
+    margin-bottom: 1.5em;
+}
+
+div#read a {
+    font-family: "Source Code Pro";
+    color: var(--bg-color);
+    text-shadow: 2px 2px var(--link-color);
+}
