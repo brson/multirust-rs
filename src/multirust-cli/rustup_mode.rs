@@ -1,6 +1,6 @@
 use clap::{App, Arg, AppSettings, SubCommand, ArgMatches};
 use common;
-use multirust::{Result, Cfg, Error, Toolchain};
+use multirust::{selfcheck, Result, Cfg, Error, Toolchain};
 use multirust_dist::manifest::Component;
 use multirust_dist::dist::TargetTriple;
 use multirust_utils::utils;
@@ -55,6 +55,7 @@ pub fn main() -> Result<()> {
             match c.subcommand() {
                 ("update", Some(_)) => try!(self_update::update()),
                 ("uninstall", Some(m)) => try!(self_uninstall(m)),
+                ("check", Some(_)) => try!(self_check(cfg)),
                 (_ ,_) => unreachable!(),
             }
         }
@@ -159,7 +160,9 @@ pub fn cli() -> App<'static, 'static> {
                 .arg(Arg::with_name("no-prompt")
                      .short("y")))
             .subcommand(SubCommand::with_name("upgrade-data")
-                .about("Upgrade the internal data format.")))
+                .about("Upgrade the internal data format."))
+            .subcommand(SubCommand::with_name("check")
+                .about("Run diagnostics")))
 }
 
 fn maybe_upgrade_data(cfg: &Cfg, m: &ArgMatches) -> Result<bool> {
@@ -373,4 +376,8 @@ fn self_uninstall(m: &ArgMatches) -> Result<()> {
     let no_prompt = m.is_present("no-prompt");
 
     self_update::uninstall(no_prompt)
+}
+
+fn self_check(cfg: &Cfg) -> Result<()> {
+    common::self_check(cfg)
 }

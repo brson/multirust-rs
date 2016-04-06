@@ -50,6 +50,7 @@ pub enum Error {
     InfiniteRecursion,
     NeedMetadataUpgrade,
     UpgradeIoError(io::Error),
+    SelfCheckIoError(io::Error),
     BadInstallerType(String),
     ComponentsUnsupported(String),
     UnknownComponent(String, Component),
@@ -173,6 +174,7 @@ impl error::Error for Error {
             InfiniteRecursion =>  "infinite recursion detected",
             NeedMetadataUpgrade => "rustup's metadata is out of date. run `rustup self upgrade-data`",
             UpgradeIoError(_) => "I/O error during upgrade",
+            SelfCheckIoError(_) => "I/O error during self check",
             BadInstallerType(_) => "invalid extension for installer",
             ComponentsUnsupported(_) => "toolchain does not support componentsn",
             UnknownComponent(_ ,_) => "toolchain does not contain component",
@@ -195,6 +197,7 @@ impl error::Error for Error {
             Utils(ref e) => Some(e),
             Temp(ref e) => Some(e),
             UpgradeIoError(ref e) => Some(e),
+            SelfCheckIoError(ref e) => Some(e),
             WindowsUninstallMadness(ref e) => Some(e),
             UnknownMetadataVersion(_) |
             InvalidEnvironment |
@@ -240,6 +243,9 @@ impl Display for Error {
             NeedMetadataUpgrade => write!(f, "{}", self.description()),
             UpgradeIoError(ref e) => {
                 write!(f, "I/O error during upgrade: {}", e.description())
+            }
+            SelfCheckIoError(ref e) => {
+                write!(f, "I/O error during self check: {}", e.description())
             }
             BadInstallerType(ref s) => {
                 write!(f, "invalid extension for installer: '{}'", s)

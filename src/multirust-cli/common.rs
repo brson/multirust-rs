@@ -306,3 +306,16 @@ fn split_override<T: FromStr>(s: &str, separator: char) -> Option<(T, T)> {
         }
     })
 }
+
+pub fn self_check(cfg: &Cfg) -> Result<()> {
+    info!("running self diagnostics");
+
+    let notices = selfcheck::run(cfg);
+
+    if notices.is_empty()
+
+    for (problem, solution) in notices {
+        warn!("{}", problem);
+        info!("{}", solution);
+    }
+}

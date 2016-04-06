@@ -175,6 +175,8 @@ pub fn install(no_prompt: bool, verbose: bool, default: &str) -> Result<()> {
         try!(install_bins());
         try!(do_add_to_path(&get_add_path_methods()));
         try!(maybe_install_rust(default, verbose));
+        try!(maybe_install_rust_stable(verbose));
+        try!(do_self_check(verbose));
 
         if cfg!(unix) {
             let ref env_file = try!(utils::cargo_home()).join("env");
@@ -324,6 +326,12 @@ fn maybe_install_rust(toolchain_str: &str, verbose: bool) -> Result<()> {
     }
 
     Ok(())
+}
+
+fn do_self_check(verbose: bool) -> Result<()> {
+    let ref cfg = try!(common::set_globals(verbose));
+
+    common::self_check(cfg)
 }
 
 pub fn uninstall(no_prompt: bool) -> Result<()> {
@@ -813,9 +821,9 @@ fn do_remove_from_path(methods: &[PathUpdateMethod]) -> Result<()> {
 /// (and on windows this process will not be running to do it),
 /// multirust-setup is stored in CARGO_HOME/bin, and then deleted next
 /// time multirust runs.
-pub fn update() -> Result<()> {
+pub fn update(verbose: bool) -> Result<()> {
 
-    let setup_path = try!(prepare_update());
+    let setup_path = try!(prepare_update(verbose));
     if let Some(ref p) = setup_path {
         info!("rustup updated successfully");
         try!(run_update(p));
@@ -824,7 +832,10 @@ pub fn update() -> Result<()> {
     Ok(())
 }
 
-pub fn prepare_update() -> Result<Option<PathBuf>> {
+pub fn prepare_update(verbose: bool) -> Result<Option<PathBuf>> {
+
+    try!(do_self_check(verbose));
+
     let ref cargo_home = try!(utils::cargo_home());
     let ref multirust_path = cargo_home.join(&format!("bin/multirust{}", EXE_SUFFIX));
     let ref setup_path = cargo_home.join(&format!("bin/rustup-setup{}", EXE_SUFFIX));

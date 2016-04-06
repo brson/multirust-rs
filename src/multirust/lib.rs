@@ -17,3 +17,4 @@ mod toolchain;
 mod config;
 mod env_var;
 mod install;
+pub mod selfcheck;
