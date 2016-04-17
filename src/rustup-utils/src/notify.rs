@@ -33,7 +33,6 @@ use std::fmt;
 use std::intrinsics::type_name;
 use std::sync::Arc;
 
-#[fundamental]
 pub trait Notifyable<N> {
     fn call(&self, n: N);
 }
@@ -130,15 +129,10 @@ macro_rules! extend_error {
 }
 #[macro_export]
 macro_rules! extend_notification {
-    ($( $cur:ident )::*: $( $base:ident )::*, $p:ident => $e:expr) => (
-        impl<'a, 'b> $crate::notify::Notifyable<$($base)::*<'a>> for $crate::notify::NotifyHandler<'b, for<'c> $crate::notify::Notifyable<$($cur)::*<'c>>> {
-            fn call(&self, $p: $($base)::*<'a>) {
-                self.call($e)
-            }
-        }
-        impl<'a> $crate::notify::Notifyable<$($base)::*<'a>> for $crate::notify::SharedNotifyHandler<for<'b> $crate::notify::Notifyable<$($cur)::*<'b>>> {
-            fn call(&self, $p: $($base)::*<'a>) {
-                self.call($e)
+    ($cur:ty: $base:ty, $p:ident => $e:expr) => (
+        impl From<$base> for $cur {
+            fn from($p: $base) -> $cur {
+                $e
             }
         }
     )
@@ -168,6 +162,14 @@ macro_rules! ntfy {
 macro_rules! shared_ntfy {
     ($e:expr) => (
         $crate::notify::SharedNotifyHandler::some(::std::sync::Arc::new($e))
+    )
+}
+#[macro_export]
+macro_rules! ntfy2 {
+    ($p:ident, $e:expr) => (
+        ::$p::NotifyHandler::some(&|n: ::$p::Notification| {
+            $e.call(n.into())
+        })
     )
 }
 #[macro_export]
