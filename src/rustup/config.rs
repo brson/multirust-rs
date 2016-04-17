@@ -53,7 +53,7 @@ impl Cfg {
         // Set up the multirust home directory
         let multirust_dir = try!(utils::multirust_home());
 
-        try!(utils::ensure_dir_exists("home", &multirust_dir, ntfy!(&notify_handler)));
+        try!(utils::ensure_dir_exists("home", &multirust_dir, ntfy2!(rustup_utils, notify_handler)));
 
         // Data locations
         let version_file = multirust_dir.join("version");
@@ -64,9 +64,10 @@ impl Cfg {
 
         let notify_clone = notify_handler.clone();
         let temp_cfg = temp::Cfg::new(multirust_dir.join("tmp"),
-                                      shared_ntfy!(move |n: temp::Notification| {
-                                          notify_clone.call(Notification::Temp(n));
-                                      }));
+                                      temp::SharedNotifyHandler::some(
+                                          ::std::sync::Arc::new(move |n: temp::Notification| {
+                                              notify_clone.call(Notification::Temp(n));
+                                      })));
 
         // GPG key
         let gpg_key = if let Some(path) = env::var_os("RUSTUP_GPG_KEY")
@@ -117,7 +118,7 @@ impl Cfg {
         if create_parent {
             try!(utils::ensure_dir_exists("toolchains",
                                           &self.toolchains_dir,
-                                          ntfy!(&self.notify_handler)));
+                                          ntfy2!(rustup_utils, &self.notify_handler)));
         }
 
         Toolchain::from(self, name)
@@ -133,7 +134,7 @@ impl Cfg {
         if create_parent {
             try!(utils::ensure_dir_exists("update-hash",
                                           &self.update_hash_dir,
-                                          ntfy!(&self.notify_handler)));
+                                          ntfy2!(rustup_utils, self.notify_handler)));
         }
 
         Ok(self.update_hash_dir.join(toolchain))
@@ -180,7 +181,7 @@ impl Cfg {
                 for dir in dirs {
                     let dir = try!(dir.map_err(|e| Error::UpgradeIoError(e)));
                     try!(utils::remove_dir("toolchain", &dir.path(),
-                                           ::rustup_utils::NotifyHandler::some(&self.notify_handler)));
+                                           ntfy2!(rustup_utils, self.notify_handler)));
                 }
 
                 // Also delete the update hashes
@@ -200,7 +201,7 @@ impl Cfg {
 
     pub fn delete_data(&self) -> Result<()> {
         if utils::path_exists(&self.multirust_dir) {
-            Ok(try!(utils::remove_dir("home", &self.multirust_dir, ntfy!(&self.notify_handler))))
+            Ok(try!(utils::remove_dir("home", &self.multirust_dir, ntfy2!(rustup_utils, self.notify_handler))))
         } else {
             Ok(())
         }

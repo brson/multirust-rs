@@ -382,7 +382,7 @@ pub fn download_hash(url: &str, cfg: DownloadCfg) -> Result<String> {
     let hash_file = try!(cfg.temp_cfg.new_file());
 
     try!(utils::download_file(hash_url, &hash_file, None,
-                              ntfy2!(rustup_utils, &cfg.notify_handler)));
+                              ntfy2!(rustup_utils, cfg.notify_handler)));
 
     Ok(try!(utils::read_file("hash", &hash_file).map(|s| s[0..64].to_owned())))
 }

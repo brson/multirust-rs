@@ -167,9 +167,18 @@ macro_rules! shared_ntfy {
 #[macro_export]
 macro_rules! ntfy2 {
     ($p:ident, $e:expr) => (
-        ::$p::NotifyHandler::some(&|n: ::$p::Notification| {
+        $crate::notify::NotifyHandler::some(&|n: ::$p::Notification| {
             $e.call(n.into())
         })
+    )
+}
+#[macro_export]
+macro_rules! shared_ntfy2 {
+    ($p:ident, $e:expr) => (
+        $crate::notify::SharedNotifyHandler::some(
+            ::std::sync::Arc::new(|n: ::$p::Notification| {
+                $e.call(n.into())
+            }))
     )
 }
 #[macro_export]

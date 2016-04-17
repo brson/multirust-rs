@@ -72,7 +72,7 @@ impl<'a> Toolchain<'a> {
             try!(utils::remove_file("update hash", &update_hash));
         }
         let handler = self.cfg.notify_handler.as_ref();
-        let result = install::uninstall(&self.path, ntfy!(&handler));
+        let result = install::uninstall(&self.path, ntfy2!(rustup_dist, handler));
         if !self.exists() {
             self.cfg.notify_handler.call(Notification::UninstalledToolchain(&self.name));
         }
@@ -90,7 +90,7 @@ impl<'a> Toolchain<'a> {
             .notify_handler
             .call(Notification::ToolchainDirectory(&self.path, &self.name));
         let handler = self.cfg.notify_handler.as_ref();
-        let updated = try!(install_method.run(&self.path, ntfy!(&handler)));
+        let updated = try!(install_method.run(&self.path, ntfy2!(rustup_dist, handler)));
 
         if !updated {
             self.cfg.notify_handler.call(Notification::UpdateHashMatches);
@@ -137,7 +137,7 @@ impl<'a> Toolchain<'a> {
         dist::DownloadCfg {
             dist_root: &self.cfg.dist_root_url,
             temp_cfg: &self.cfg.temp_cfg,
-            notify_handler: ntfy!(&self.cfg.notify_handler),
+            notify_handler: ntfy2!(rustup_dist, self.cfg.notify_handler),
         }
     }
 
@@ -200,7 +200,7 @@ impl<'a> Toolchain<'a> {
                 try!(utils::download_file(url,
                                           &local_installer,
                                           None,
-                                          ntfy!(&self.cfg.notify_handler)));
+                                          ntfy2!(rustup_utils, self.cfg.notify_handler)));
                 try!(self.install(InstallMethod::Installer(&local_installer, &self.cfg.temp_cfg)));
             } else {
                 // If installer is a filename

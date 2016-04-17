@@ -135,7 +135,7 @@ impl Manifestation {
             let url_url = try!(utils::parse_url(&url));
 
             let mut hasher = Hasher::new(Type::SHA256);
-            try!(utils::download_file(url_url, &temp_file, Some(&mut hasher), ntfy!(&notify_handler))
+            try!(utils::download_file(url_url, &temp_file, Some(&mut hasher), ntfy2!(rustup_utils, notify_handler))
                  .map_err(|e| Error::ComponentDownloadFailed(component.clone(), e)));
 
             let actual_hash = hasher.finish()

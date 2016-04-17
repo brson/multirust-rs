@@ -22,7 +22,7 @@ impl<'a> DownloadCfg<'a> {
 
             let sig_url = try!(utils::parse_url(&format!("{}.asc", url)));
             let sig_file = try!(self.temp_cfg.new_file());
-            try!(utils::download_file(sig_url, &sig_file, None, ntfy!(&self.notify_handler)));
+            try!(utils::download_file(sig_url, &sig_file, None, ntfy2!(rustup_utils, self.notify_handler)));
 
             let target_url = try!(utils::parse_url(url));
             let target_file = try!(self.temp_cfg.new_file());
@@ -32,7 +32,7 @@ impl<'a> DownloadCfg<'a> {
                 try!(utils::download_file(target_url,
                                           &target_file,
                                           None,
-                                          ntfy!(&self.notify_handler)));
+                                          ntfy2!(rustup_utils, self.notify_handler)));
 
                 let key_file = try!(self.temp_cfg.new_file());
                 let key_filename: &Path = &key_file;
@@ -61,7 +61,7 @@ impl<'a> DownloadCfg<'a> {
 
             let hash_url = try!(utils::parse_url(&format!("{}.sha256", url)));
             let hash_file = try!(self.temp_cfg.new_file());
-            try!(utils::download_file(hash_url, &hash_file, None, ntfy!(&self.notify_handler)));
+            try!(utils::download_file(hash_url, &hash_file, None, ntfy2!(rustup_utils, self.notify_handler)));
 
             let hash = try!(utils::read_file("hash", &hash_file).map(|s| s[0..64].to_owned()));
             let mut hasher = Hasher::new(Type::SHA256);
@@ -71,7 +71,7 @@ impl<'a> DownloadCfg<'a> {
             try!(utils::download_file(target_url,
                                       &target_file,
                                       Some(&mut hasher),
-                                      ntfy!(&self.notify_handler)));
+                                      ntfy2!(rustup_utils, self.notify_handler)));
 
             let actual_hash = hasher.finish()
                                     .iter()

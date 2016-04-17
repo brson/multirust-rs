@@ -11,6 +11,9 @@ pub use toolchain::*;
 pub use override_db::*;
 pub use rustup_utils::{utils, notify};
 
+// Used by shared_ntfy2!
+pub use rustup_dist::temp as rustup_temp;
+
 mod errors;
 mod override_db;
 mod toolchain;

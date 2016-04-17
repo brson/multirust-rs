@@ -33,11 +33,11 @@ impl<'a> InstallMethod<'a> {
 
         match self {
             InstallMethod::Copy(src) => {
-                try!(utils::copy_dir(src, path, ntfy!(&notify_handler)));
+                try!(utils::copy_dir(src, path, ntfy2!(rustup_utils, &notify_handler)));
                 Ok(true)
             }
             InstallMethod::Link(src) => {
-                try!(utils::symlink_dir(src, &path, ntfy!(&notify_handler)));
+                try!(utils::symlink_dir(src, &path, ntfy2!(rustup_utils, &notify_handler)));
                 Ok(true)
             }
             InstallMethod::Installer(src, temp_cfg) => {
@@ -88,5 +88,5 @@ impl<'a> InstallMethod<'a> {
 }
 
 pub fn uninstall(path: &Path, notify_handler: NotifyHandler) -> Result<()> {
-    Ok(try!(utils::remove_dir("install", path, ntfy!(&notify_handler))))
+    Ok(try!(utils::remove_dir("install", path, ntfy2!(rustup_utils, notify_handler))))
 }

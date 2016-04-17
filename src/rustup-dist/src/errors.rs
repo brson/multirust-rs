@@ -91,7 +91,6 @@ pub type SharedNotifyHandler =
 extend_error!(Error: temp::Error, e => Error::Temp(e));
 extend_error!(Error: rustup_utils::Error, e => Error::Utils(e));
 
-//declare_notification!(Notification: rustup_utils::Notification, n => Notification::Utils(n));
 //extend_notification!(Notification: rustup_utils::Notification, n => Notification::Utils(n));
 //extend_notification!(Notification: temp::Notification, n => Notification::Temp(n));
 

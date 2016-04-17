@@ -11,7 +11,7 @@ pub struct OverrideDB(PathBuf);
 
 impl OverrideDB {
     fn path_to_db_key(&self, path: &Path, notify_handler: NotifyHandler) -> Result<String> {
-        Ok(utils::canonicalize_path(path, ntfy!(&notify_handler))
+        Ok(utils::canonicalize_path(path, ntfy2!(rustup_utils, &notify_handler))
                .display()
                .to_string() + DB_DELIMITER)
     }
@@ -80,7 +80,7 @@ impl OverrideDB {
             return Ok(None);
         }
 
-        let dir = utils::canonicalize_path(dir_unresolved, ntfy!(&notify_handler));
+        let dir = utils::canonicalize_path(dir_unresolved, ntfy2!(rustup_utils, notify_handler));
         let mut maybe_path = Some(&*dir);
         while let Some(path) = maybe_path {
             let key = try!(self.path_to_db_key(path, notify_handler));
