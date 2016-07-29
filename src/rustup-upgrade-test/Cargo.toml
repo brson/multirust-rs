@@ -1,0 +1,20 @@
+[package]
+
+name = "rustup-upgrade-test"
+version = "0.2.0"
+authors = [ "Brian Anderson <banderson@mozilla.com>" ]
+description = "Upgrade tests for rustup"
+
+license = "MIT/Apache-2.0"
+
+build = "build.rs"
+
+[lib]
+name = "rustup_upgrade_test"
+test = false
+
+[dependencies]
+tempdir = "0.3.4"
+
+[build-dependencies]
+build-tests = { path = "../../../build-tests/src/build-tests", version = "0.1.0" }
