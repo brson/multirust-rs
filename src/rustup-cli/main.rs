@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 #![recursion_limit = "1024"]
 
 extern crate rustup_dist;
@@ -56,17 +57,6 @@ fn main() {
 }
 
 fn run_multirust() -> Result<()> {
-    // Guard against infinite recursion
-    let recursion_count = env::var("RUST_RECURSION_COUNT").ok()
-        .and_then(|s| s.parse().ok()).unwrap_or(0);
-    if recursion_count > 5 {
-        return Err(ErrorKind::InfiniteRecursion.into());
-    }
-
-    // Do various things to clean up past messes
-    // FIXME: Remove this soon to get it out of the proxy path
-    do_compatibility_hacks();
-
     // The name of arg0 determines how the program is going to behave
     let arg0 = env::args().next().map(|a| PathBuf::from(a));
     let name = arg0.as_ref()
