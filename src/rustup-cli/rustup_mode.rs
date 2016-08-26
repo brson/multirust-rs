@@ -15,55 +15,11 @@ use std::io::Write;
 use help::*;
 
 pub fn main() -> Result<()> {
-    try!(::self_update::cleanup_self_updater());
-
     let ref matches = cli().get_matches();
     let verbose = matches.is_present("verbose");
     let ref cfg = try!(common::set_globals(verbose));
 
-    if try!(maybe_upgrade_data(cfg, matches)) {
-        return Ok(())
-    }
-
-    try!(cfg.check_metadata_version());
-
     match matches.subcommand() {
-        ("show", Some(_)) => try!(show(cfg)),
-        ("install", Some(m)) => try!(update(cfg, m)),
-        ("update", Some(m)) => try!(update(cfg, m)),
-        ("default", Some(m)) => try!(default_(cfg, m)),
-        ("toolchain", Some(c)) => {
-            match c.subcommand() {
-                ("install", Some(m)) => try!(update(cfg, m)),
-                ("list", Some(_)) => try!(common::list_toolchains(cfg)),
-                ("link", Some(m)) => try!(toolchain_link(cfg, m)),
-                ("uninstall", Some(m)) => try!(toolchain_remove(cfg, m)),
-                // Synonyms
-                ("update", Some(m)) => try!(update(cfg, m)),
-                ("add", Some(m)) => try!(update(cfg, m)),
-                ("remove", Some(m)) => try!(toolchain_remove(cfg, m)),
-                (_, _) => unreachable!(),
-            }
-        }
-        ("target", Some(c)) => {
-            match c.subcommand() {
-                ("list", Some(m)) => try!(target_list(cfg, m)),
-                ("add", Some(m)) => try!(target_add(cfg, m)),
-                ("remove", Some(m)) => try!(target_remove(cfg, m)),
-                // Synonyms
-                ("install", Some(m)) => try!(target_add(cfg, m)),
-                ("uninstall", Some(m)) => try!(target_remove(cfg, m)),
-                (_, _) => unreachable!(),
-            }
-        }
-        ("component", Some(c)) => {
-            match c.subcommand() {
-                ("list", Some(m)) => try!(component_list(cfg, m)),
-                ("add", Some(m)) => try!(component_add(cfg, m)),
-                ("remove", Some(m)) => try!(component_remove(cfg, m)),
-                (_, _) => unreachable!(),
-            }
-        }
         ("override", Some(c)) => {
             match c.subcommand() {
                 ("list", Some(_)) => try!(common::list_overrides(cfg)),
@@ -73,31 +29,6 @@ pub fn main() -> Result<()> {
                 ("add", Some(m)) => try!(override_add(cfg, m)),
                 ("remove", Some(m)) => try!(override_remove(cfg, m)),
                 (_ ,_) => unreachable!(),
-            }
-        }
-        ("run", Some(m)) => try!(run(cfg, m)),
-        ("which", Some(m)) => try!(which(cfg, m)),
-        ("doc", Some(m)) => try!(doc(cfg, m)),
-        ("man", Some(m)) => try!(man(cfg,m)),
-        ("self", Some(c)) => {
-            match c.subcommand() {
-                ("update", Some(_)) => try!(self_update::update()),
-                ("uninstall", Some(m)) => try!(self_uninstall(m)),
-                (_ ,_) => unreachable!(),
-            }
-        }
-        ("telemetry", Some(c)) => {
-            match c.subcommand() {
-                ("enable", Some(_)) => try!(set_telemetry(&cfg, TelemetryMode::On)),
-                ("disable", Some(_)) => try!(set_telemetry(&cfg, TelemetryMode::Off)),
-                ("analyze", Some(_)) => try!(analyze_telemetry(&cfg)),
-                (_, _) => unreachable!(),
-            }
-        }
-        ("set", Some(c)) => {
-            match c.subcommand() {
-                ("default-host", Some(m)) => try!(set_default_host_triple(&cfg, m)),
-                (_, _) => unreachable!(),
             }
         }
         (_, _) => unreachable!(),
