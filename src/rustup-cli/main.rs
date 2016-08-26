@@ -1,5 +1,6 @@
 #![allow(dead_code)]
 #![allow(unused_imports)]
+#![allow(unused_variables)]
 #![recursion_limit = "1024"]
 
 extern crate rustup_dist;
@@ -62,9 +63,8 @@ fn run_multirust() -> Result<()> {
         Some("rustup") => {
             rustup_mode::main()
         }
-        Some(n) => {
+	_ => {
             setup_mode::main()
         }
-	_ => panic!()
     }
 }
