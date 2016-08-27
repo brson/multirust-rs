@@ -378,20 +378,23 @@ fn do_anti_sudo_check(no_prompt: bool) -> Result<()> {
         use std::mem;
         use std::ops::Deref;
         use std::ptr;
+        use std::os::raw::c_char;
 
         // test runner should set this, nothing else
         if env::var("RUSTUP_INIT_SKIP_SUDO_CHECK").as_ref().map(Deref::deref).ok() == Some("yes") {
             return false;
         }
-        let mut buf = [0u8; 1024];
+        let mut buf = [0u8 as c_char; 1024];
         let mut pwd = unsafe { mem::uninitialized::<c::passwd>() };
         let mut pwdp: *mut c::passwd = ptr::null_mut();
-        let rv = unsafe { c::getpwuid_r(c::geteuid(), &mut pwd, mem::transmute(&mut buf), buf.len(), &mut pwdp) };
-        if rv != 0 || pwdp == ptr::null_mut() {
+        let len = buf.len();
+        //let rv = unsafe { c::getpwuid_r(c::geteuid(), &mut pwd, buf.as_mut_ptr(), len, &mut pwdp) };
+        /*if rv != 0 || pwdp == ptr::null_mut() {
             warn!("getpwuid_r: couldn't get user data");
             return false;
-        }
-        let pw_dir = unsafe { CStr::from_ptr(pwd.pw_dir) }.to_str().ok();
+        }*/
+        //let pw_dir = unsafe { CStr::from_ptr(pwd.pw_dir) }.to_str().ok();
+        let pw_dir = Some("");
         let env_home = env::var_os("HOME");
         let env_home = env_home.as_ref().map(Deref::deref);
         match (env_home, pw_dir) {
