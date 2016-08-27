@@ -50,29 +50,12 @@ use rustup_dist::dist::TargetTriple;
 
 fn main() {
     if let Err(ref e) = run_multirust() {
-        common::report_error(e);
         std::process::exit(1);
     }
 }
 
 fn run_multirust() -> Result<()> {
-    // Guard against infinite recursion
-    let recursion_count = env::var("RUST_RECURSION_COUNT").ok()
-        .and_then(|s| s.parse().ok()).unwrap_or(0);
-    if recursion_count > 5 {
-        return Err(ErrorKind::InfiniteRecursion.into());
-    }
-
-    // Do various things to clean up past messes
-    // FIXME: Remove this soon to get it out of the proxy path
-    do_compatibility_hacks();
-
-    // The name of arg0 determines how the program is going to behave
-    let arg0 = env::args().next().map(|a| PathBuf::from(a));
-    let name = arg0.as_ref()
-        .and_then(|a| a.file_stem())
-        .and_then(|a| a.to_str());
-    match name {
+    match Some("blah") {
         Some("rustup") => {
             rustup_mode::main()
         }
