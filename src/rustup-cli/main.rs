@@ -76,45 +76,14 @@ fn run_multirust() -> Result<()> {
         Some("rustup") => {
             rustup_mode::main()
         }
-        Some(n) if n.starts_with("multirust-setup")||
-                   n.starts_with("rustup-setup") ||
-                   n.starts_with("rustup-init") => {
+        Some(n) => {
             // NB: The above check is only for the prefix of the file
             // name. Browsers rename duplicates to
             // e.g. multirust-setup(2), and this allows all variations
             // to work.
             setup_mode::main()
         }
-        Some(n) if n.starts_with("rustup-gc-") => {
-            // This is the final uninstallation stage on windows where
-            // multirust deletes its own exe
-            self_update::complete_windows_uninstall()
-        }
-        Some(n) if n.starts_with("multirust-") => {
-            // This is for compatibility with previous revisions of
-            // multirust-rs self-update, which expect multirust-rs to
-            // be available on the server, downloads it to
-            // ~/.multirust/tmp/multirust-$random, and execute it with
-            // `self install` as the arguments.  FIXME: Verify this
-            // works.
-            let opts = self_update::InstallOpts {
-                default_host_triple: TargetTriple::from_host_or_build().to_string(),
-                default_toolchain: "stable".to_string(),
-                no_modify_path: false,
-            };
-            if cfg!(windows) {
-                self_update::install(false, false, opts)
-            } else {
-                self_update::install(true, false, opts)
-            }
-        }
-        Some(_) => {
-            proxy_mode::main()
-        }
-        None => {
-            // Weird case. No arg0, or it's unparsable.
-            Err(ErrorKind::NoExeName.into())
-        }
+        _ => panic!()
     }
 }
 
