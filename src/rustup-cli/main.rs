@@ -25,8 +25,6 @@ extern crate libc;
 mod log;
 mod common;
 mod download_tracker;
-mod proxy_mode;
-mod setup_mode;
 mod rustup_mode;
 mod self_update;
 mod job;
