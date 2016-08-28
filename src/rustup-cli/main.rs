@@ -25,13 +25,13 @@ struct InstallOpts {
 
 fn install(mut opts: InstallOpts) -> Result<()> {
 
-    try!(do_anti_sudo_check(false));
+    try!(do_anti_sudo_check());
 
     Ok(())
 }
 
 #[inline(never)]
-fn do_anti_sudo_check(no_prompt: bool) -> Result<()> {
+fn do_anti_sudo_check() -> Result<()> {
     extern crate libc as c;
 
     use std::env;
@@ -57,7 +57,7 @@ fn do_anti_sudo_check(no_prompt: bool) -> Result<()> {
         (Some(ref eh), Some(ref pd)) => eh != pd
     };
 
-    match (mismatch, no_prompt) {
+    match (mismatch, false) {
         (false, _) => (),
         (true, false) => {
             process::exit(1);
