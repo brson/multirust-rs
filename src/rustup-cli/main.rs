@@ -86,12 +86,6 @@ fn do_anti_sudo_check(no_prompt: bool) -> Result<()> {
         let mut pwd = unsafe { mem::uninitialized::<c::passwd>() };
         let mut pwdp: *mut c::passwd = ptr::null_mut();
         let len = buf.len();
-        //let rv = unsafe { c::getpwuid_r(c::geteuid(), &mut pwd, buf.as_mut_ptr(), len, &mut pwdp) };
-        /*if rv != 0 || pwdp == ptr::null_mut() {
-            warn!("getpwuid_r: couldn't get user data");
-            return false;
-        }*/
-        //let pw_dir = unsafe { CStr::from_ptr(pwd.pw_dir) }.to_str().ok();
         let pw_dir = Some("");
         let env_home = env::var_os("HOME");
         let env_home = env_home.as_ref().map(Deref::deref);
