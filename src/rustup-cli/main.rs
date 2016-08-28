@@ -23,7 +23,7 @@ fn install(mut opts: InstallOpts) -> Result<()> {
 
     if env::var("RUSTUP_INIT_SKIP_SUDO_CHECK")
         .as_ref().map(Deref::deref).ok() == Some("yes") {
-            return process::exit(1);
+            panic!()
         }
     let mut buf = [0i8; 1024];
     let mut pwd = unsafe { mem::uninitialized::<passwd>() };
