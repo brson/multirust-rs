@@ -26,9 +26,6 @@ fn install(mut opts: InstallOpts) -> Result<()> {
             panic!()
         }
     let mut buf = [0i8; 1024];
-    let mut pwd = 0;
-    let mut pwdp: *mut i8 = ptr::null_mut();
-    let len = buf.len();
     let pw_dir = Some("");
     let env_home = env::var_os("HOME");
     let env_home = env_home.as_ref().map(Deref::deref);
