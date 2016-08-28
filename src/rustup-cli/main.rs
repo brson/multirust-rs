@@ -1,5 +1,3 @@
-extern crate libc;
-
 use std::env;
 use std::env::consts::EXE_SUFFIX;
 use std::path::{Path, PathBuf};
@@ -32,22 +30,19 @@ fn install(mut opts: InstallOpts) -> Result<()> {
 
 #[inline(never)]
 fn do_anti_sudo_check() -> Result<()> {
-    extern crate libc as c;
-
     use std::env;
     use std::ffi::CStr;
     use std::mem;
     use std::ops::Deref;
     use std::ptr;
-    use std::os::raw::c_char;
 
     if env::var("RUSTUP_INIT_SKIP_SUDO_CHECK")
         .as_ref().map(Deref::deref).ok() == Some("yes") {
             return process::exit(1);
         }
-    let mut buf = [0u8 as c_char; 1024];
-    let mut pwd = unsafe { mem::uninitialized::<c::passwd>() };
-    let mut pwdp: *mut c::passwd = ptr::null_mut();
+    let mut buf = [0i8; 1024];
+    let mut pwd = unsafe { mem::uninitialized::<passwd>() };
+    let mut pwdp: *mut passwd = ptr::null_mut();
     let len = buf.len();
     let pw_dir = Some("");
     let env_home = env::var_os("HOME");
@@ -67,6 +62,16 @@ fn do_anti_sudo_check() -> Result<()> {
     }
 
     Ok(())
+}
+
+struct passwd {
+    pub pw_name: *mut i8,
+    pub pw_passwd: *mut i8,
+    pub pw_uid: u32,
+    pub pw_gid: u32,
+    pub pw_gecos: *mut i8,
+    pub pw_dir: *mut i8,
+    pub pw_shell: *mut i8,
 }
 
 type Result<T> = ::std::result::Result<T, Error>;
