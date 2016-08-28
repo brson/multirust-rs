@@ -6,16 +6,12 @@ use std::fs::{self, File};
 use std::io::Read;
 
 fn main() {
-    let opts = InstallOpts {
-        default_toolchain: "stable-x86_64-unknown-linux-gnu".to_string(),
-    };
+    let opts = InstallOpts;
 
     let _ = install(opts);
 }
 
-struct InstallOpts {
-    pub default_toolchain: String,
-}
+struct InstallOpts;
 
 fn install(mut opts: InstallOpts) -> Result<()> {
 
