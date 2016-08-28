@@ -23,9 +23,7 @@ extern crate libc;
 
 #[macro_use]
 mod log;
-mod common;
 mod download_tracker;
-mod rustup_mode;
 mod self_update;
 mod job;
 mod term2;
