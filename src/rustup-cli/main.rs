@@ -37,7 +37,7 @@ fn install(mut opts: InstallOpts) -> Result<()> {
     match (mismatch, false) {
         (false, _) => (),
         (true, false) => {
-            process::exit(1);
+            panic!()
         },
         (true, true) => {
         }
