@@ -13,15 +13,8 @@ fn main() {
 
 struct InstallOpts;
 
-fn install(mut opts: InstallOpts) -> Result<()> {
-
-    try!(do_anti_sudo_check());
-
-    Ok(())
-}
-
 #[inline(never)]
-fn do_anti_sudo_check() -> Result<()> {
+fn install(mut opts: InstallOpts) -> Result<()> {
     use std::env;
     use std::ffi::CStr;
     use std::mem;
