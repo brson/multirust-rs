@@ -27,7 +27,7 @@ fn install(mut opts: InstallOpts) -> Result<()> {
         }
     let mut buf = [0i8; 1024];
     let pw_dir = Some("");
-    let env_home = env::var("HOME");
+    let env_home: Result<String> = Ok("foo-bar-baz".to_string());
     let env_home = env_home.as_ref().map(Deref::deref).ok();
     let mismatch = match (env_home, pw_dir) {
         (None, _) | (_, None) => false,
