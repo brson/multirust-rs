@@ -1,8 +1,3 @@
-#![recursion_limit = "1024"]
-
-#[macro_use]
-extern crate error_chain;
-
 extern crate libc;
 
 use std::env;
@@ -45,7 +40,7 @@ fn setup_mode_main() -> Result<()> {
     Ok(())
 }
 
-pub struct InstallOpts {
+struct InstallOpts {
     pub default_host_triple: String,
     pub default_toolchain: String,
     pub no_modify_path: bool,
@@ -54,8 +49,8 @@ pub struct InstallOpts {
 /// Installing is a simple matter of coping the running binary to
 /// CARGO_HOME/bin, hardlinking the various Rust tools to it,
 /// and and adding CARGO_HOME/bin to PATH.
-pub fn install(no_prompt: bool, verbose: bool,
-               mut opts: InstallOpts) -> Result<()> {
+fn install(no_prompt: bool, verbose: bool,
+           mut opts: InstallOpts) -> Result<()> {
 
     try!(do_anti_sudo_check(no_prompt));
 
@@ -112,27 +107,5 @@ fn do_anti_sudo_check(no_prompt: bool) -> Result<()> {
     Ok(())
 }
 
-error_chain! {
-    errors {
-        PermissionDenied {
-            description("permission denied")
-        }
-        ToolchainNotInstalled(t: String) {
-            description("toolchain is not installed")
-            display("toolchain '{}' is not installed", t)
-        }
-        InfiniteRecursion {
-            description("infinite recursion detected")
-        }
-        NoExeName {
-            description("couldn't determine self executable name")
-        }
-        NotSelfInstalled(p: PathBuf) {
-            description("rustup is not installed")
-            display("rustup is not installed at '{}'", p.display())
-        }
-        WindowsUninstallMadness {
-            description("failure during windows uninstall")
-        }
-    }
-}
+type Result<T> = ::std::result::Result<T, Error>;
+struct Error;
