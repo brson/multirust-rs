@@ -36,37 +36,35 @@ fn install(mut opts: InstallOpts) -> Result<()> {
 // If the user is trying to install with sudo, on some systems this will
 // result in writing root-owned files to the user's home directory, because
 // sudo is configured not to change $HOME. Don't let that bogosity happen.
+#[inline(never)]
 fn do_anti_sudo_check(no_prompt: bool) -> Result<()> {
-    #[inline(never)]
-    pub fn home_mismatch() -> bool {
-        extern crate libc as c;
+    extern crate libc as c;
 
-        use std::env;
-        use std::ffi::CStr;
-        use std::mem;
-        use std::ops::Deref;
-        use std::ptr;
-        use std::os::raw::c_char;
+    use std::env;
+    use std::ffi::CStr;
+    use std::mem;
+    use std::ops::Deref;
+    use std::ptr;
+    use std::os::raw::c_char;
 
-        // test runner should set this, nothing else
-        if env::var("RUSTUP_INIT_SKIP_SUDO_CHECK")
-            .as_ref().map(Deref::deref).ok() == Some("yes") {
-            return false;
+    // test runner should set this, nothing else
+    if env::var("RUSTUP_INIT_SKIP_SUDO_CHECK")
+        .as_ref().map(Deref::deref).ok() == Some("yes") {
+            return process::exit(1);
         }
-        let mut buf = [0u8 as c_char; 1024];
-        let mut pwd = unsafe { mem::uninitialized::<c::passwd>() };
-        let mut pwdp: *mut c::passwd = ptr::null_mut();
-        let len = buf.len();
-        let pw_dir = Some("");
-        let env_home = env::var_os("HOME");
-        let env_home = env_home.as_ref().map(Deref::deref);
-        match (env_home, pw_dir) {
-            (None, _) | (_, None) => false,
-            (Some(ref eh), Some(ref pd)) => eh != pd
-        }
-    }
+    let mut buf = [0u8 as c_char; 1024];
+    let mut pwd = unsafe { mem::uninitialized::<c::passwd>() };
+    let mut pwdp: *mut c::passwd = ptr::null_mut();
+    let len = buf.len();
+    let pw_dir = Some("");
+    let env_home = env::var_os("HOME");
+    let env_home = env_home.as_ref().map(Deref::deref);
+    let mismatch = match (env_home, pw_dir) {
+        (None, _) | (_, None) => false,
+        (Some(ref eh), Some(ref pd)) => eh != pd
+    };
 
-    match (home_mismatch(), no_prompt) {
+    match (mismatch, no_prompt) {
         (false, _) => (),
         (true, false) => {
             process::exit(1);
