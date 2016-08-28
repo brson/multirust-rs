@@ -1,24 +1,16 @@
 #![recursion_limit = "1024"]
 
-extern crate rustup_dist;
-#[macro_use]
-extern crate rustup_utils;
 #[macro_use]
 extern crate error_chain;
 
-#[macro_use]
-extern crate rustup;
 extern crate libc;
 
-use rustup_dist::dist::TargetTriple;
-use rustup_utils::utils;
 use std::env;
 use std::env::consts::EXE_SUFFIX;
 use std::path::{Path, PathBuf};
 use std::process::{self, Command};
 use std::fs::{self, File};
 use std::io::Read;
-use rustup_dist::{temp};
 
 fn main() {
     if let Err(ref e) = run_multirust() {
@@ -127,16 +119,6 @@ fn do_anti_sudo_check(no_prompt: bool) -> Result<()> {
 }
 
 error_chain! {
-    links {
-        rustup::Error, rustup::ErrorKind, Rustup;
-        rustup_dist::Error, rustup_dist::ErrorKind, Dist;
-        rustup_utils::Error, rustup_utils::ErrorKind, Utils;
-    }
-
-    foreign_links {
-        temp::Error, Temp;
-    }
-
     errors {
         PermissionDenied {
             description("permission denied")
