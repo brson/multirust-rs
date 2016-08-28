@@ -21,14 +21,8 @@ extern crate sha2;
 extern crate markdown;
 extern crate libc;
 
-#[macro_use]
-mod log;
-mod download_tracker;
 mod self_update;
-mod job;
-mod term2;
 mod errors;
-mod help;
 
 use std::env;
 use std::path::PathBuf;

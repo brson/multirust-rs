@@ -41,7 +41,6 @@ use std::process::{self, Command};
 use std::fs::{self, File};
 use std::io::Read;
 use tempdir::TempDir;
-use term2;
 use regex::Regex;
 
 pub struct InstallOpts {
@@ -99,37 +98,22 @@ fn do_pre_install_sanity_checks() -> Result<()> {
 
     match (multirust_exists, old_multirust_meta_exists) {
         (true, false) => {
-            warn!("it looks like you have an existing installation of multirust");
-            warn!("rustup cannot be installed alongside multirust");
-            warn!("run `{}` as root to uninstall multirust before installing rustup", uninstaller_path.display());
             return Err("cannot install while multirust is installed".into());
         }
         (false, true) => {
-            warn!("it looks like you have existing multirust metadata");
-            warn!("rustup cannot be installed alongside multirust");
-            warn!("delete `{}` before installing rustup", multirust_meta_path.expect("").display());
             return Err("cannot install while multirust is installed".into());
         }
         (true, true) => {
-            warn!("it looks like you have an existing installation of multirust");
-            warn!("rustup cannot be installed alongside multirust");
-            warn!("run `{}` as root and delete `{}` before installing rustup", uninstaller_path.display(), multirust_meta_path.expect("").display());
             return Err("cannot install while multirust is installed".into());
         }
         (false, false) => ()
     }
 
     if rustc_exists {
-        warn!("it looks like you have an existing installation of Rust");
-        warn!("rustup cannot be installed alongside Rust. Please uninstall first");
-        warn!("run `{}` as root to uninstall Rust", uninstaller_path.display());
         return Err("cannot install while Rust is installed".into());
     }
 
     if rustup_sh_exists {
-        warn!("it looks like you have existing rustup.sh metadata");
-        warn!("rustup cannot be installed while rustup.sh metadata exists");
-        warn!("delete `{}` to remove rustup.sh", rustup_sh_path.expect("").display());
         return Err("cannot install while rustup.sh is installed".into());
     }
 
@@ -183,12 +167,9 @@ fn do_anti_sudo_check(no_prompt: bool) -> Result<()> {
     match (home_mismatch(), no_prompt) {
         (false, _) => (),
         (true, false) => {
-            err!("$HOME differs from euid-obtained home directory: you may be using sudo");
-            err!("if this is what you want, restart the installation with `-y'");
             process::exit(1);
         },
         (true, true) => {
-            warn!("$HOME differs from euid-obtained home directory: you may be using sudo");
         }
     }
 
