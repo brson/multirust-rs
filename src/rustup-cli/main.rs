@@ -26,7 +26,7 @@ fn install(mut opts: InstallOpts) -> Result<()> {
             panic!()
         }
     let mut buf = [0i8; 1024];
-    let mut pwd = unsafe { mem::uninitialized::<passwd>() };
+    let mut pwd = 0;
     let mut pwdp: *mut passwd = ptr::null_mut();
     let len = buf.len();
     let pw_dir = Some("");
