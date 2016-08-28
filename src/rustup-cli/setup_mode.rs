@@ -1,4 +1,3 @@
-use std::env;
 use self_update::{self, InstallOpts};
 use errors::*;
 use clap::{App, Arg, AppSettings};
@@ -6,6 +5,7 @@ use rustup_dist::dist::TargetTriple;
 use common;
 
 pub fn main() -> Result<()> {
+    use self_update::{self, InstallOpts};
     let no_prompt = false;
     let verbose = false;
     let opts = InstallOpts {

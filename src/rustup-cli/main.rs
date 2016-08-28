@@ -19,15 +19,6 @@ extern crate scopeguard;
 extern crate tempdir;
 extern crate sha2;
 extern crate markdown;
-
-#[cfg(windows)]
-extern crate winapi;
-#[cfg(windows)]
-extern crate winreg;
-#[cfg(windows)]
-extern crate user32;
-#[cfg(windows)]
-extern crate kernel32;
 extern crate libc;
 
 #[macro_use]
@@ -61,8 +52,23 @@ fn run_multirust() -> Result<()> {
             // name. Browsers rename duplicates to
             // e.g. multirust-setup(2), and this allows all variations
             // to work.
-            setup_mode::main()
+            setup_mode_main()
         }
         _ => panic!()
     }
+}
+
+fn setup_mode_main() -> Result<()> {
+    use self_update::{self, InstallOpts};
+    let no_prompt = false;
+    let verbose = false;
+    let opts = InstallOpts {
+        default_host_triple: "x86_64-unknown-linux-gnu".to_string(),
+        default_toolchain: "stable-x86_64-unknown-linux-gnu".to_string(),
+        no_modify_path: false,
+    };
+
+    try!(self_update::install(no_prompt, verbose, opts));
+
+    Ok(())
 }
