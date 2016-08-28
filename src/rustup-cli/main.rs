@@ -8,15 +8,13 @@ use std::fs::{self, File};
 use std::io::Read;
 
 fn main() {
-    let no_prompt = false;
-    let verbose = false;
     let opts = InstallOpts {
         default_host_triple: "x86_64-unknown-linux-gnu".to_string(),
         default_toolchain: "stable-x86_64-unknown-linux-gnu".to_string(),
         no_modify_path: false,
     };
 
-    let _ = install(no_prompt, verbose, opts);
+    let _ = install(opts);
 }
 
 struct InstallOpts {
@@ -28,10 +26,9 @@ struct InstallOpts {
 /// Installing is a simple matter of coping the running binary to
 /// CARGO_HOME/bin, hardlinking the various Rust tools to it,
 /// and and adding CARGO_HOME/bin to PATH.
-fn install(no_prompt: bool, verbose: bool,
-           mut opts: InstallOpts) -> Result<()> {
+fn install(mut opts: InstallOpts) -> Result<()> {
 
-    try!(do_anti_sudo_check(no_prompt));
+    try!(do_anti_sudo_check(false));
 
     Ok(())
 }
