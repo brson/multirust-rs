@@ -8,7 +8,7 @@ use std::fs::{self, File};
 use std::io::Read;
 
 fn main() {
-    let _ = run_multirust();
+    let _ = setup_mode_main();
 }
 
 fn run_multirust() -> Result<()> {
