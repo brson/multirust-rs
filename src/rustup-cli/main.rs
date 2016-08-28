@@ -50,7 +50,8 @@ fn do_anti_sudo_check(no_prompt: bool) -> Result<()> {
         use std::os::raw::c_char;
 
         // test runner should set this, nothing else
-        if env::var("RUSTUP_INIT_SKIP_SUDO_CHECK").as_ref().map(Deref::deref).ok() == Some("yes") {
+        if env::var("RUSTUP_INIT_SKIP_SUDO_CHECK")
+            .as_ref().map(Deref::deref).ok() == Some("yes") {
             return false;
         }
         let mut buf = [0u8 as c_char; 1024];
