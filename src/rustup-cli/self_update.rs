@@ -60,65 +60,6 @@ pub fn install(no_prompt: bool, verbose: bool,
     Ok(())
 }
 
-fn do_pre_install_sanity_checks() -> Result<()> {
-
-    let multirust_manifest_path
-        = PathBuf::from("/usr/local/lib/rustlib/manifest-multirust");
-    let rustc_manifest_path
-        = PathBuf::from("/usr/local/lib/rustlib/manifest-rustc");
-    let uninstaller_path
-        = PathBuf::from("/usr/local/lib/rustlib/uninstall.sh");
-    let multirust_meta_path
-        = env::home_dir().map(|d| d.join(".multirust"));
-    let multirust_version_path
-        = multirust_meta_path.as_ref().map(|p| p.join("version"));
-    let rustup_sh_path
-        = env::home_dir().map(|d| d.join(".rustup"));
-    let rustup_sh_version_path = rustup_sh_path.as_ref().map(|p| p.join("rustup-version"));
-
-    let multirust_exists =
-        multirust_manifest_path.exists() && uninstaller_path.exists();
-    let rustc_exists =
-        rustc_manifest_path.exists() && uninstaller_path.exists();
-    let rustup_sh_exists =
-        rustup_sh_version_path.map(|p| p.exists()) == Some(true);
-    let old_multirust_meta_exists = if let Some(ref multirust_version_path) = multirust_version_path {
-        multirust_version_path.exists() && {
-            let version = utils::read_file("old-multirust", &multirust_version_path);
-            let version = version.unwrap_or(String::new());
-            let version = version.parse().unwrap_or(0);
-            let cutoff_version = 12; // First rustup version
-
-            version < cutoff_version
-        }
-    } else {
-        false
-    };
-
-    match (multirust_exists, old_multirust_meta_exists) {
-        (true, false) => {
-            return Err("cannot install while multirust is installed".into());
-        }
-        (false, true) => {
-            return Err("cannot install while multirust is installed".into());
-        }
-        (true, true) => {
-            return Err("cannot install while multirust is installed".into());
-        }
-        (false, false) => ()
-    }
-
-    if rustc_exists {
-        return Err("cannot install while Rust is installed".into());
-    }
-
-    if rustup_sh_exists {
-        return Err("cannot install while rustup.sh is installed".into());
-    }
-
-    Ok(())
-}
-
 // If the user is trying to install with sudo, on some systems this will
 // result in writing root-owned files to the user's home directory, because
 // sudo is configured not to change $HOME. Don't let that bogosity happen.
