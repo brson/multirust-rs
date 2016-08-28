@@ -8,9 +8,7 @@ use std::fs::{self, File};
 use std::io::Read;
 
 fn main() {
-    if let Err(ref e) = run_multirust() {
-        std::process::exit(1);
-    }
+    let _ = run_multirust();
 }
 
 fn run_multirust() -> Result<()> {
