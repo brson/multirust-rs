@@ -23,9 +23,6 @@ struct InstallOpts {
     pub no_modify_path: bool,
 }
 
-/// Installing is a simple matter of coping the running binary to
-/// CARGO_HOME/bin, hardlinking the various Rust tools to it,
-/// and and adding CARGO_HOME/bin to PATH.
 fn install(mut opts: InstallOpts) -> Result<()> {
 
     try!(do_anti_sudo_check(false));
@@ -33,9 +30,6 @@ fn install(mut opts: InstallOpts) -> Result<()> {
     Ok(())
 }
 
-// If the user is trying to install with sudo, on some systems this will
-// result in writing root-owned files to the user's home directory, because
-// sudo is configured not to change $HOME. Don't let that bogosity happen.
 #[inline(never)]
 fn do_anti_sudo_check(no_prompt: bool) -> Result<()> {
     extern crate libc as c;
@@ -47,7 +41,6 @@ fn do_anti_sudo_check(no_prompt: bool) -> Result<()> {
     use std::ptr;
     use std::os::raw::c_char;
 
-    // test runner should set this, nothing else
     if env::var("RUSTUP_INIT_SKIP_SUDO_CHECK")
         .as_ref().map(Deref::deref).ok() == Some("yes") {
             return process::exit(1);
