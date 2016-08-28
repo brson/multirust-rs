@@ -50,31 +50,6 @@ pub struct InstallOpts {
     pub no_modify_path: bool,
 }
 
-#[cfg(feature = "no-self-update")]
-pub const NEVER_SELF_UPDATE: bool = true;
-#[cfg(not(feature = "no-self-update"))]
-pub const NEVER_SELF_UPDATE: bool = false;
-
-static TOOLS: &'static [&'static str]
-    = &["rustc", "rustdoc", "cargo", "rust-lldb", "rust-gdb"];
-
-static UPDATE_ROOT: &'static str
-    = "https://static.rust-lang.org/rustup/dist";
-
-/// CARGO_HOME suitable for display, possibly with $HOME
-/// substituted for the directory prefix
-fn canonical_cargo_home() -> Result<String> {
-    let path = try!(utils::cargo_home());
-    let mut path_str = path.to_string_lossy().to_string();
-
-    let default_cargo_home = utils::home_dir().unwrap_or(PathBuf::from(".")).join(".cargo");
-    if default_cargo_home == path {
-        path_str = String::from("$HOME/.cargo");
-    }
-
-    Ok(path_str)
-}
-
 /// Installing is a simple matter of coping the running binary to
 /// CARGO_HOME/bin, hardlinking the various Rust tools to it,
 /// and and adding CARGO_HOME/bin to PATH.
