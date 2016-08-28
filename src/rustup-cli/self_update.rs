@@ -55,7 +55,6 @@ pub struct InstallOpts {
 pub fn install(no_prompt: bool, verbose: bool,
                mut opts: InstallOpts) -> Result<()> {
 
-    try!(do_pre_install_sanity_checks());
     try!(do_anti_sudo_check(no_prompt));
 
     Ok(())
