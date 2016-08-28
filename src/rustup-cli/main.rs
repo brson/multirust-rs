@@ -7,31 +7,17 @@ extern crate rustup_utils;
 extern crate error_chain;
 
 #[macro_use]
-extern crate clap;
-extern crate regex;
-#[macro_use]
 extern crate rustup;
-extern crate term;
-extern crate itertools;
-extern crate time;
-extern crate rand;
-extern crate scopeguard;
-extern crate tempdir;
-extern crate sha2;
-extern crate markdown;
 extern crate libc;
 
 use rustup_dist::dist::TargetTriple;
 use rustup_utils::utils;
-use sha2::{Sha256, Digest};
 use std::env;
 use std::env::consts::EXE_SUFFIX;
 use std::path::{Path, PathBuf};
 use std::process::{self, Command};
 use std::fs::{self, File};
 use std::io::Read;
-use tempdir::TempDir;
-use regex::Regex;
 use rustup_dist::{temp};
 
 fn main() {
