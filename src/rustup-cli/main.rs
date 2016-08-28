@@ -9,7 +9,6 @@ fn main() {
     let opts = InstallOpts {
         default_host_triple: "x86_64-unknown-linux-gnu".to_string(),
         default_toolchain: "stable-x86_64-unknown-linux-gnu".to_string(),
-        no_modify_path: false,
     };
 
     let _ = install(opts);
@@ -18,7 +17,6 @@ fn main() {
 struct InstallOpts {
     pub default_host_triple: String,
     pub default_toolchain: String,
-    pub no_modify_path: bool,
 }
 
 fn install(mut opts: InstallOpts) -> Result<()> {
