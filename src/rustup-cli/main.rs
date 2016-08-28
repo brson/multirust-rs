@@ -21,12 +21,7 @@ extern crate sha2;
 extern crate markdown;
 extern crate libc;
 
-mod self_update;
-mod errors;
-
 use rustup_dist::dist::TargetTriple;
-use errors::*;
-use rustup_dist::dist;
 use rustup_utils::utils;
 use sha2::{Sha256, Digest};
 use std::env;
@@ -37,6 +32,7 @@ use std::fs::{self, File};
 use std::io::Read;
 use tempdir::TempDir;
 use regex::Regex;
+use rustup_dist::{temp};
 
 fn main() {
     if let Err(ref e) = run_multirust() {
@@ -142,4 +138,39 @@ fn do_anti_sudo_check(no_prompt: bool) -> Result<()> {
     }
 
     Ok(())
+}
+
+error_chain! {
+    links {
+        rustup::Error, rustup::ErrorKind, Rustup;
+        rustup_dist::Error, rustup_dist::ErrorKind, Dist;
+        rustup_utils::Error, rustup_utils::ErrorKind, Utils;
+    }
+
+    foreign_links {
+        temp::Error, Temp;
+    }
+
+    errors {
+        PermissionDenied {
+            description("permission denied")
+        }
+        ToolchainNotInstalled(t: String) {
+            description("toolchain is not installed")
+            display("toolchain '{}' is not installed", t)
+        }
+        InfiniteRecursion {
+            description("infinite recursion detected")
+        }
+        NoExeName {
+            description("couldn't determine self executable name")
+        }
+        NotSelfInstalled(p: PathBuf) {
+            description("rustup is not installed")
+            display("rustup is not installed at '{}'", p.display())
+        }
+        WindowsUninstallMadness {
+            description("failure during windows uninstall")
+        }
+    }
 }
