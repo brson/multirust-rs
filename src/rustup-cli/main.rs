@@ -11,19 +11,6 @@ fn main() {
     let _ = setup_mode_main();
 }
 
-fn run_multirust() -> Result<()> {
-    match Some("blah") {
-        Some(n) => {
-            // NB: The above check is only for the prefix of the file
-            // name. Browsers rename duplicates to
-            // e.g. multirust-setup(2), and this allows all variations
-            // to work.
-            setup_mode_main()
-        }
-        _ => panic!()
-    }
-}
-
 fn setup_mode_main() -> Result<()> {
     let no_prompt = false;
     let verbose = false;
