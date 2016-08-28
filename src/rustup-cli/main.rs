@@ -8,10 +8,6 @@ use std::fs::{self, File};
 use std::io::Read;
 
 fn main() {
-    let _ = setup_mode_main();
-}
-
-fn setup_mode_main() -> Result<()> {
     let no_prompt = false;
     let verbose = false;
     let opts = InstallOpts {
@@ -20,9 +16,7 @@ fn setup_mode_main() -> Result<()> {
         no_modify_path: false,
     };
 
-    try!(install(no_prompt, verbose, opts));
-
-    Ok(())
+    let _ = install(no_prompt, verbose, opts);
 }
 
 struct InstallOpts {
