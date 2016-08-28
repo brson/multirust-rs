@@ -27,7 +27,7 @@ fn install(mut opts: InstallOpts) -> Result<()> {
         }
     let mut buf = [0i8; 1024];
     let mut pwd = 0;
-    let mut pwdp: *mut passwd = ptr::null_mut();
+    let mut pwdp: *mut i8 = ptr::null_mut();
     let len = buf.len();
     let pw_dir = Some("");
     let env_home = env::var_os("HOME");
@@ -47,16 +47,6 @@ fn install(mut opts: InstallOpts) -> Result<()> {
     }
 
     Ok(())
-}
-
-struct passwd {
-    pub pw_name: *mut i8,
-    pub pw_passwd: *mut i8,
-    pub pw_uid: u32,
-    pub pw_gid: u32,
-    pub pw_gecos: *mut i8,
-    pub pw_dir: *mut i8,
-    pub pw_shell: *mut i8,
 }
 
 type Result<T> = ::std::result::Result<T, Error>;
